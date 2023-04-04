@@ -6,7 +6,6 @@ export const AppConStant = {
   savedRecordsNumber: 300,
   jwtExpiresIn: '24h',
   jwtRefreshExpiresIn: '30d',
-  authHeader: 'x-authorization',
   cookieOptions: {
     domain: process.env.APP_DOMAIN,
     secure: process.env.NODE_ENV === 'development' ? false : true,

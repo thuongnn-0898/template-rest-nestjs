@@ -1,9 +1,12 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
+
+import { UserDto } from '../../user/dtos/user.dto';
 
 export const CurrentUser = createParamDecorator(
   (_data: unknown, context: ExecutionContext) => {
     const req = context.switchToHttp().getRequest();
 
-    return req.user;
+    return plainToClass(UserDto, req.user);
   },
 );

@@ -24,7 +24,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "NODE_ENV=test jest --config ./test/jest-e2e.json --detectOpenHandles"
   },
   "dependencies": {
     "@nestjs/common": "^9.0.0",
@@ -40,6 +40,7 @@
     "class-validator": "^0.14.0",
     "cli-color": "^2.0.3",
     "cookie-parser": "^1.4.6",
+    "locter": "^1.1.0",
     "nest-winston": "^1.9.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
@@ -48,6 +49,8 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
     "typeorm": "^0.3.12",
+    "typeorm-extension": "^2.7.0",
+    "typeorm-seeding": "^1.6.1",
     "winston": "^3.8.2"
   },
   "devDependencies": {

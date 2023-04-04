@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
 import { AuthTokenDto } from './dtos/auth-token.dto';
@@ -6,7 +6,6 @@ import { Payload } from './index.type';
 import { User } from '../entities/user.entity';
 import { AppConStant } from '../shared/constants/app.constant';
 import { compare } from '../shared/ultils/bcypt.util';
-import { AuthErrorConstant } from '../errors/auth-errors.constant';
 import { UserService } from '../user/user.service';
 
 @Injectable()
@@ -24,7 +23,7 @@ export class AuthService {
     const user = await this.userService.findByUsername(username);
 
     if (!user || !(await compare(password, user.password))) {
-      throw new BadRequestException(AuthErrorConstant.wrongLoginInfo);
+      throw new UnauthorizedException();
     }
 
     return user;

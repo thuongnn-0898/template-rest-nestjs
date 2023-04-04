@@ -19,5 +19,5 @@ export class ErrorDto {
 
   @Expose()
   @Default(null)
-  field?: string;
+  property?: string;
 }

@@ -46,7 +46,10 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
       if (error.children.length) {
         responseError.push({
           property: error.property,
-          children: this.formatChildrenErrorValidate(error.children),
+          children: this.formatChildrenErrorValidate(
+            error.children,
+            null,
+          ).filter((e) => e != null),
           resource,
         });
       } else {
@@ -57,15 +60,19 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
     return responseError;
   }
 
-  private formatChildrenErrorValidate(children) {
+  private formatChildrenErrorValidate(children, index) {
     const errors = [];
 
     children.forEach((error) => {
       if (error.children.length) {
         errors[error.property] = this.formatChildrenErrorValidate(
           error.children,
+          +error.property,
         );
       } else {
+        if (!isNaN(index)) {
+          error.index = index;
+        }
         errors.push(this.resourceError(error, error.target.constructor.name));
       }
     });
@@ -77,6 +84,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
     const code = ErrorConstant[Object.keys(error.constraints).at(-1)]?.code;
 
     return {
+      index: error.index,
       property: error.property,
       message: messages[code],
       code,

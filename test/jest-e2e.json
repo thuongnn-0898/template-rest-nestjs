@@ -1,9 +1,17 @@
 {
   "moduleFileExtensions": ["js", "json", "ts"],
-  "rootDir": ".",
+  "rootDir": "./..",
   "testEnvironment": "node",
-  "testRegex": ".e2e-spec.ts$",
+  "testTimeout": 60000,
+  "testRegex": ".spec.ts$",
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
-  }
+  },
+  "collectCoverage": false,
+  "coverageDirectory": "coverage",
+  "collectCoverageFrom": [
+    "src/**/*.ts",
+    "!src/database/*/*.ts"
+  ],
+  "coverageReporters": ["text-summary", "lcov"]
 }
