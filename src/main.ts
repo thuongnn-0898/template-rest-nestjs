@@ -8,6 +8,7 @@ import { loggerOption } from './logger/logger.option';
 import { ResponseLoggerInterceptor } from './interceptors/response.interceptor';
 import { AsyncRequestContext } from './async-request-context/async-request-context.service';
 import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception.filter';
+import { QueryFailedErrorFilter } from './shared/filters/query-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -24,7 +25,10 @@ async function bootstrap() {
     new ResponseLoggerInterceptor(filterParam),
   );
 
-  app.useGlobalFilters(new BadRequestExceptionFilter(filterParam));
+  app.useGlobalFilters(
+    new QueryFailedErrorFilter(filterParam),
+    new BadRequestExceptionFilter(filterParam),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({

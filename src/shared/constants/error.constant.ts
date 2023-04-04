@@ -1,4 +1,9 @@
 export const ErrorConstant = {
+  GetPropertyInMessageRegex: /^Key \((.*)\)=\(.*\) already exists.$/,
+  internalServer: {
+    code: 5000,
+    message: 'INTERNAL_SERVER_ERROR',
+  },
   entityNotFound: {
     code: '1001',
   },
@@ -22,6 +27,10 @@ export const ErrorConstant = {
   },
   arrayMaxSize: {
     code: '1008',
+  },
+  uniqueViolation: {
+    code: 1017,
+    message: '重複しています。',
   },
 };
 

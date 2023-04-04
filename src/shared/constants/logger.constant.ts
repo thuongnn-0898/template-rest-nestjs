@@ -16,5 +16,6 @@ export const LoggerConstant = {
   introspectionQuery: 'IntrospectionQuery',
   typeOrmFirstQuery: 'TypeOrmFirstQuery',
   backgroundJobContext: 'BackgroundJob',
+  queryFailed: 'Query failed',
   notFoundErrorResponse: 'Not found ne`',
 };
