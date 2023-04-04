@@ -3,17 +3,11 @@ import {
   BadRequestException,
   Catch,
   ExceptionFilter,
-  HttpStatus,
 } from '@nestjs/common';
-import { ValidationError } from 'class-validator';
 import { Response } from 'express';
-import { get, result } from 'lodash';
 
 import messages from '../constants/error-message.constant';
-import { getObjectByKey, getKey } from '../ultils/app.util';
-import { ErrorConstant } from '../constants/error.constant';
-import { ErrorDto } from '../dtos/error.dto';
-import { ErrorResponseDto } from '../dtos/error-response.dto';
+import { ErrorConstant, HTTP_ERR_MSGS } from '../constants/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
 import { FilterType } from '../types/FilterType';
 
@@ -24,81 +18,69 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
   catch(exception: any, host: ArgumentsHost) {
     const { logger, asyncRequestContext } = this.filterParam;
     const ctx = host.switchToHttp();
-    let exceptionRes = exception.getResponse();
+    let errors = exception.getResponse();
+    const status = exception.getStatus();
     const response = ctx.getResponse<Response>();
-    let errRes: ErrorResponseDto = null;
+    let errorResponse = [];
 
-    if (
-      Array.isArray(exceptionRes.message) &&
-      exceptionRes.message[0] instanceof ValidationError
-    ) {
-      exceptionRes = getObjectByKey(exceptionRes, 'constraints');
+    if (Array.isArray(errors.message)) {
+      errors = errors.message;
+      errorResponse = this.formatErrorValidate(errors);
+    }
 
-      const errs = exceptionRes.map((element: ValidationError, i: number) => {
-        const { code } = Object.assign(
-          {},
-          result(
-            ErrorConstant,
-            getKey(element.constraints, Object.values(element.constraints)[0]),
-          ),
-        ) as ErrorDto;
+    logger.log(
+      LoggerConstant.badRequest,
+      asyncRequestContext.getRequestIdStore(),
+    );
 
-        if (code) {
-          const resource = get(element, 'target.constructor.resource');
-          const arrayError = get(element, 'message[0].children');
+    return response.status(status).json({
+      messages: HTTP_ERR_MSGS[status],
+      errors: errorResponse,
+    });
+  }
 
-          return {
-            code,
-            index:
-              Array.isArray(arrayError) && arrayError[i]?.property
-                ? (arrayError[i].property as unknown as number)
-                : null,
-            resource: resource != undefined ? resource : null,
-            field: element.property,
-            message: messages[code],
-          };
-        } else {
-          return {
-            resource: get(element, 'target.constructor.resource'),
-            message: 'error undefined',
-            field: element.property,
-          };
-        }
-      });
+  private formatErrorValidate(errors: any, responseError = []) {
+    errors.map((error) => {
+      const { resource } = error.target.constructor;
 
-      if (errs.length) {
-        const message = exception.getResponse().error;
-
-        errRes = { status: HttpStatus.BAD_REQUEST, errors: errs, message };
+      if (error.children.length) {
+        responseError.push({
+          property: error.property,
+          children: this.formatChildrenErrorValidate(error.children),
+          resource,
+        });
+      } else {
+        responseError.push(this.resourceError(error, resource));
       }
-    } else {
-      errRes = { status: HttpStatus.BAD_REQUEST, errors: exceptionRes };
-    }
+    });
 
-    if (!errRes) {
-      logger.error(
-        LoggerConstant.notFoundErrorResponse,
-        undefined,
-        asyncRequestContext.getRequestIdStore(),
-      );
+    return responseError;
+  }
 
-      const status = HttpStatus.INTERNAL_SERVER_ERROR;
+  private formatChildrenErrorValidate(children) {
+    const errors = [];
 
-      const internalError = {
-        status,
-        code: `http-${status}`,
-        message: exceptionRes.error,
-      };
+    children.forEach((error) => {
+      if (error.children.length) {
+        errors[error.property] = this.formatChildrenErrorValidate(
+          error.children,
+        );
+      } else {
+        errors.push(this.resourceError(error, error.target.constructor.name));
+      }
+    });
 
-      response.status(status).json(internalError);
-    } else {
-      logger.error(
-        LoggerConstant.badRequest,
-        undefined,
-        asyncRequestContext.getRequestIdStore(),
-      );
+    return errors;
+  }
 
-      response.status(HttpStatus.BAD_REQUEST).json(errRes);
-    }
+  private resourceError(error, resource) {
+    const code = ErrorConstant[Object.keys(error.constraints).at(-1)]?.code;
+
+    return {
+      property: error.property,
+      message: messages[code],
+      code,
+      resource,
+    };
   }
 }

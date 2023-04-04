@@ -1,12 +1,13 @@
-import { IsNotEmpty, ValidateNested } from 'class-validator';
+import { IsNotEmpty, MaxLength } from 'class-validator';
 
-import { Test2 } from './test2';
-import { Type } from 'class-transformer';
-import { Test } from '@nestjs/testing';
+import { EntityConstant } from 'src/shared/constants/entity.constant';
 
 export class TestDto {
   @IsNotEmpty()
-  @ValidateNested({ each: true })
-  @Type(() => Test)
-  test: Test2[];
+  @MaxLength(EntityConstant.shortLength)
+  title: string;
+
+  @IsNotEmpty()
+  @MaxLength(EntityConstant.longLength)
+  description: string;
 }
