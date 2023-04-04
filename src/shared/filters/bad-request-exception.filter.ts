@@ -28,8 +28,9 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
       errorResponse = this.formatErrorValidate(errors);
     }
 
-    logger.log(
+    logger.error(
       LoggerConstant.badRequest,
+      undefined,
       asyncRequestContext.getRequestIdStore(),
     );
 
@@ -73,6 +74,7 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
         if (!isNaN(index)) {
           error.index = index;
         }
+
         errors.push(this.resourceError(error, error.target.constructor.name));
       }
     });

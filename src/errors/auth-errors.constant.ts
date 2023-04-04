@@ -5,4 +5,14 @@ export const AuthErrorConstant = {
     code: 'auth-2001',
     resource: User.name,
   },
+
+  invalidAccessToken: {
+    code: 'auth-2002',
+    resource: User.name,
+  },
+
+  invalidRequestInfo: {
+    code: 'auth-2003',
+    resource: User.name,
+  },
 };

@@ -1,5 +1,6 @@
 export const ErrorConstant = {
   GetPropertyInMessageRegex: /^Key \((.*)\)=\(.*\) already exists.$/,
+  getPropertyWhenNotFound: /"((?:""|[^"])*)"/,
   internalServer: {
     code: 5000,
     message: 'INTERNAL_SERVER_ERROR',

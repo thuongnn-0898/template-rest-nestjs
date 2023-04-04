@@ -4,6 +4,7 @@ import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
 import { Post } from '../entities/post.entity';
+import { EntityNotFoundError } from 'typeorm';
 
 @Injectable()
 export class PostService {
@@ -21,7 +22,7 @@ export class PostService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} post`;
+    return { name: undefined };
   }
 
   update(id: number, updatePostDto: UpdatePostDto) {
@@ -29,6 +30,10 @@ export class PostService {
   }
 
   remove(id: number) {
+    if (isNaN(id)) {
+      throw new EntityNotFoundError(Post.name, undefined);
+    }
+
     return `This action removes a #${id} post`;
   }
 }

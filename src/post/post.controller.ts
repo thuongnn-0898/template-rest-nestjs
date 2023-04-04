@@ -31,7 +31,12 @@ export class PostController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+    const post = this.postService.findOne(+id);
+    post.name.forEach((element) => {
+      console.log(element);
+    });
+
+    return post;
   }
 
   @Patch(':id')

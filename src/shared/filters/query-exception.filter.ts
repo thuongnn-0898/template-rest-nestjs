@@ -28,28 +28,30 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
       parseInt(exception.code, 0),
       exception.table,
     );
-    let status;
+    let status: number;
 
     if (errors) {
       status = HttpStatus.BAD_REQUEST;
-      logger.log(
+      logger.error(
         LoggerConstant.queryFailed,
+        undefined,
         asyncRequestContext.getRequestIdStore(),
       );
     } else {
       errors = internalServerError();
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       logger.error(
-        exception.stack,
+        LoggerConstant.internalServer,
         null,
         asyncRequestContext.getRequestIdStore(),
       );
     }
+
     return response.status(status).json(errors);
   }
 
   private queryFailedError(
-    exception,
+    exception: any,
     errorCode: number,
     entity: string,
   ): ErrorDto {
@@ -62,6 +64,7 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
             .pop(),
         );
         const { code, message } = ErrorConstant.uniqueViolation;
+
         return plainToInstance(ErrorDto, { code, message, entity, property });
       }
     }

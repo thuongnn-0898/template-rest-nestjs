@@ -10,4 +10,8 @@ export default {
   '1007': 'must contain at least 1 elements',
   '1008': `must must contain no more than ${EntityConstant.arrayMaxSize} elements`,
   '1062': 'Duplicate data: ',
+
+  'auth-2001': 'Email or password is invalid',
+  'auth-2002': 'Token is invalid',
+  'auth-2003': 'Request information is invalid',
 };

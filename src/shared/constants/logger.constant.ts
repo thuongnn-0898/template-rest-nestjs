@@ -13,6 +13,7 @@ export const LoggerConstant = {
   pageNotFound: 'Completed 404 Page Not Found',
   forbidden: 'Completed 403 Forbidden',
   unauthorized: 'Completed 401 Unauthorized',
+  internalServer: 'INTERNAL SERVER ERROR',
   introspectionQuery: 'IntrospectionQuery',
   typeOrmFirstQuery: 'TypeOrmFirstQuery',
   backgroundJobContext: 'BackgroundJob',

@@ -9,6 +9,9 @@ import { ResponseLoggerInterceptor } from './interceptors/response.interceptor';
 import { AsyncRequestContext } from './async-request-context/async-request-context.service';
 import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception.filter';
 import { QueryFailedErrorFilter } from './shared/filters/query-exception.filter';
+import { UnauthorizedFilter } from './shared/filters/unauthorized.filter';
+import { EntityNotFoundFilter } from './shared/filters/entity-not-found.filter';
+import { InternalServerErrorFilter } from './shared/filters/internal-server-error.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -26,8 +29,11 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(
+    new InternalServerErrorFilter(filterParam),
     new QueryFailedErrorFilter(filterParam),
     new BadRequestExceptionFilter(filterParam),
+    new UnauthorizedFilter(filterParam),
+    new EntityNotFoundFilter(filterParam),
   );
 
   app.useGlobalPipes(
