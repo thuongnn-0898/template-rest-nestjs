@@ -7,6 +7,7 @@ import { User } from '../entities/user.entity';
 import { AppConStant } from '../shared/constants/app.constant';
 import { compare } from '../shared/ultils/bcypt.util';
 import { UserService } from '../user/user.service';
+import { AuthErrorConstant } from '../errors/auth-errors.constant';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,7 @@ export class AuthService {
     const user = await this.userService.findByUsername(username);
 
     if (!user || !(await compare(password, user.password))) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(AuthErrorConstant.wrongLoginInfo);
     }
 
     return user;

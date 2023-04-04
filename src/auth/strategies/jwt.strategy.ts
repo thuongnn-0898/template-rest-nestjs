@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
 import { UserService } from '../../user/user.service';
+import { AuthErrorConstant } from '../../errors/auth-errors.constant';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -22,7 +23,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(req: Request) {
     const user = await this.userService.findByUsername(req.body.username);
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(AuthErrorConstant.invalidRequestInfo);
     }
 
     return user;
