@@ -18,6 +18,7 @@ export class InternalServerErrorFilter implements ExceptionFilter {
   constructor(private readonly filterParam: FilterType) {}
 
   catch(exception: any, host: ArgumentsHost) {
+    console.log(exception);
     const { logger, asyncRequestContext } = this.filterParam;
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
     const ctx = host.switchToHttp();

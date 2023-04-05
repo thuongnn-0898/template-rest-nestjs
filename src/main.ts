@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, BadRequestException } from '@nestjs/common';
+import { ValidationPipe, BadRequestException, RequestMethod } from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 
 import { AppModule } from './app.module';
@@ -22,6 +22,10 @@ async function bootstrap() {
     asyncRequestContext: app.get(AsyncRequestContext),
     logger: app.get(WINSTON_MODULE_NEST_PROVIDER),
   };
+
+  app.setGlobalPrefix('api/v1', {
+    exclude: [{ path: '/auth/:splat*', method: RequestMethod.POST }],
+  });
 
   app.useGlobalInterceptors(
     new TransformInterceptor(),
