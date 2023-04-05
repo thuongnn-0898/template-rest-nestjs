@@ -2,38 +2,34 @@ import {
   ArgumentsHost,
   Catch,
   ExceptionFilter,
-  UnauthorizedException,
+  HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import errorMessageConstant from '../constants/error-message.constant';
-import { HTTP_ERR_MSGS } from '../constants/error.constant';
+import { ErrorConstant } from '../../errors/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
-import { ErrorDto } from '../dtos/error.dto';
 import { FilterType } from '../types/FilterType';
 
-@Catch(UnauthorizedException)
-export class UnauthorizedFilter implements ExceptionFilter {
+@Catch(NotFoundException)
+export class NotFoundFilter implements ExceptionFilter {
   constructor(private readonly filterParam: FilterType) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const { logger, asyncRequestContext } = this.filterParam;
+    const status = HttpStatus.NOT_FOUND;
     const ctx = host.switchToHttp();
-    const error: ErrorDto = exception.getResponse();
-    const status = exception.getStatus();
     const response = ctx.getResponse<Response>();
 
-    error.message = errorMessageConstant[error.code];
-
     logger.error(
-      LoggerConstant.unauthorized,
+      LoggerConstant.notFound,
       undefined,
       asyncRequestContext.getRequestIdStore(),
     );
 
-    return response.status(status).json({
-      messages: HTTP_ERR_MSGS[status],
+    response.status(status).json({
       statusCode: status,
+      message: ErrorConstant.notFoundException,
     });
   }
 }

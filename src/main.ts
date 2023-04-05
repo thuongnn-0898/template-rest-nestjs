@@ -15,12 +15,13 @@ import { ResponseLoggerInterceptor } from './interceptors/response.interceptor';
 import { AsyncRequestContext } from './async-request-context/async-request-context.service';
 import { BadRequestExceptionFilter } from './shared/filters/bad-request-exception.filter';
 import { QueryFailedErrorFilter } from './shared/filters/query-exception.filter';
-import { UnauthorizedFilter } from './shared/filters/unauthorized.filter';
-import { EntityNotFoundFilter } from './shared/filters/entity-not-found.filter';
-import { InternalServerErrorFilter } from './shared/filters/internal-server-error.filter';
-import { ErrorConstant } from './shared/constants/error.constant';
+import { UnauthorizedExceptionFilter } from './shared/filters/unauthorized-exception.filter';
+import { EntityNotFoundExceptionFilter } from './shared/filters/entity-not-found-exception.filter';
+import { InternalServerErrorExceptionFilter } from './shared/filters/internal-server-error-exception.filter';
+import { NotFoundFilter } from './shared/filters/not-found-exception.filter';
 import { AppConStant } from './shared/constants/app.constant';
 import { ProcessLogger } from './logger/process.logger';
+import { ErrorConstant } from './errors/error.constant';
 
 async function bootstrap() {
   const jsonParseMiddleware = json({ limit: AppConStant.jsonBodySizeLimit });
@@ -44,12 +45,12 @@ async function bootstrap() {
   );
 
   app.useGlobalFilters(
-    new InternalServerErrorFilter(filterParam),
+    new InternalServerErrorExceptionFilter(filterParam),
     new NotFoundFilter(filterParam),
     new QueryFailedErrorFilter(filterParam),
     new BadRequestExceptionFilter(filterParam),
-    new UnauthorizedFilter(filterParam),
-    new EntityNotFoundFilter(filterParam),
+    new UnauthorizedExceptionFilter(filterParam),
+    new EntityNotFoundExceptionFilter(filterParam),
   );
 
   app.useGlobalPipes(

@@ -7,13 +7,10 @@ import {
   ArgumentsHost,
   HttpStatus,
 } from '@nestjs/common';
-import { plainToInstance } from 'class-transformer';
 
 import { FilterType } from '../types/FilterType';
-import { ErrorConstant } from '../constants/error.constant';
-import { ErrorDto } from '../dtos/error.dto';
+import { ErrorConstant } from '../../errors/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
-import { ErrorUtil } from '../utils/error.util';
 
 @Catch(QueryFailedError)
 export class QueryFailedErrorFilter implements ExceptionFilter {
@@ -23,7 +20,7 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
     const { logger, asyncRequestContext } = this.filterParam;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    let errors = this.queryFailedError(
+    const errors = this.queryFailedError(
       exception,
       parseInt(exception.code, 0),
       exception.table,
@@ -38,7 +35,6 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
         asyncRequestContext.getRequestIdStore(),
       );
     } else {
-      errors = ErrorUtil.internalServerError();
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       logger.error(
         LoggerConstant.internalServer,
@@ -47,25 +43,23 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
       );
     }
 
-    return response.status(status).json(errors);
+    return response
+      .status(status)
+      .json({ statusCode: status, message: ErrorConstant.alreadyExist });
   }
 
-  private queryFailedError(
-    exception: any,
-    errorCode: number,
-    entity: string,
-  ): ErrorDto {
+  private queryFailedError(exception: any, errorCode: number, entity: string) {
     switch (errorCode) {
       case 23505: {
+        const message = ErrorConstant.uniqueViolation;
         const property = camelCase(
           exception.detail
             .match(ErrorConstant.GetPropertyInMessageRegex)[1]
             .split(', ')
             .pop(),
         );
-        const { code, message } = ErrorConstant.uniqueViolation;
 
-        return plainToInstance(ErrorDto, { code, message, entity, property });
+        return { message, entity, property };
       }
     }
   }

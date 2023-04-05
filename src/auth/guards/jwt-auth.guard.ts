@@ -17,7 +17,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     status?: any,
   ): TUser {
     if (info instanceof Error) {
-      throw new UnauthorizedException(AuthErrorConstant.wrongLoginInfo);
+      throw new UnauthorizedException(AuthErrorConstant.invalidAccessToken);
     }
 
     return super.handleRequest(err, user, info, context, status);

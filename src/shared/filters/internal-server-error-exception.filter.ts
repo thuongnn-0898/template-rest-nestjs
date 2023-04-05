@@ -6,15 +6,12 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { HTTP_ERR_MSGS } from '../constants/error.constant';
+import { ErrorConstant } from '../../errors/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
-import { ErrorResponseDto } from '../dtos/error-response.dto';
-import { ErrorDto } from '../dtos/error.dto';
 import { FilterType } from '../types/FilterType';
-import { ErrorUtil } from '../utils/error.util';
 
 @Catch()
-export class InternalServerErrorFilter implements ExceptionFilter {
+export class InternalServerErrorExceptionFilter implements ExceptionFilter {
   constructor(private readonly filterParam: FilterType) {}
 
   catch(exception: any, host: ArgumentsHost) {
@@ -22,7 +19,6 @@ export class InternalServerErrorFilter implements ExceptionFilter {
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const error: ErrorDto = ErrorUtil.internalServerError();
 
     logger.error(
       LoggerConstant.internalServer,
@@ -31,8 +27,8 @@ export class InternalServerErrorFilter implements ExceptionFilter {
     );
 
     response.status(status).json({
-      errors: [error],
-      message: HTTP_ERR_MSGS[status],
-    } as ErrorResponseDto);
+      statusCode: status,
+      message: ErrorConstant.internalServer,
+    });
   }
 }
