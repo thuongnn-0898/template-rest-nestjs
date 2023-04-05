@@ -24,7 +24,7 @@ async function bootstrap() {
   };
 
   app.setGlobalPrefix('api/v1', {
-    exclude: [{ path: '/auth/:splat*', method: RequestMethod.POST }],
+    exclude: [{ path: '/auth/:splat*', method: RequestMethod.ALL }],
   });
 
   app.useGlobalInterceptors(
