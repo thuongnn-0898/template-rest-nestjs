@@ -45,6 +45,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(
     new InternalServerErrorFilter(filterParam),
+    new NotFoundFilter(filterParam),
     new QueryFailedErrorFilter(filterParam),
     new BadRequestExceptionFilter(filterParam),
     new UnauthorizedFilter(filterParam),

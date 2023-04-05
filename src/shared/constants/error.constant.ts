@@ -37,6 +37,10 @@ export const ErrorConstant = {
     code: '1111',
     message: 'Somethings must be error',
   },
+  NotFoundException: {
+    code: 'http-404',
+    message: 'This request is not found',
+  },
   type: {
     somethingError: 'somethingError',
   },
