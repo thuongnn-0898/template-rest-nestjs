@@ -9,7 +9,6 @@ import { Response } from 'express';
 import errorMessageConstant from '../constants/error-message.constant';
 import { HTTP_ERR_MSGS } from '../constants/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
-import { ErrorResponseDto } from '../dtos/error-response.dto';
 import { ErrorDto } from '../dtos/error.dto';
 import { FilterType } from '../types/FilterType';
 
@@ -26,10 +25,6 @@ export class UnauthorizedFilter implements ExceptionFilter {
 
     error.message = errorMessageConstant[error.code];
 
-    const errorResponse: ErrorResponseDto = {
-      errors: [error],
-    };
-
     logger.error(
       LoggerConstant.unauthorized,
       undefined,
@@ -38,7 +33,7 @@ export class UnauthorizedFilter implements ExceptionFilter {
 
     return response.status(status).json({
       messages: HTTP_ERR_MSGS[status],
-      errors: errorResponse,
+      statusCode: status,
     });
   }
 }

@@ -1,4 +1,5 @@
 export const AppConStant = {
+  jsonBodySizeLimit: '50mb',
   defaultTimezone: 'Asia/Tokyo',
   startTimeOfDay: '00:00:00',
   endTimeOfDay: '23:59:59',
@@ -24,4 +25,8 @@ export const AppConStant = {
       /^((?=.*[A-Za-z])(?=.*[\041-\057\072-\100\133-\140\173-\176])|(?=.*\d)(?=.*[\041-\057\072-\100\133-\140\173-\176])|(?=.*[A-Za-z])(?=.*\d))[0-9a-zA-Z\041-\057\072-\100\133-\140\173-\176]{8,32}$/,
   },
   lengthUuid: 36,
+  redis: {
+    host: process.env.REDIS_HOST as string,
+    port: process.env.REDIS_PORT as unknown as number,
+  },
 };

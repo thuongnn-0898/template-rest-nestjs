@@ -19,4 +19,6 @@ export const LoggerConstant = {
   backgroundJobContext: 'BackgroundJob',
   queryFailed: 'Query failed',
   notFoundErrorResponse: 'Not found ne`',
+  uncaughtException: 'UncaughtException',
+  unhandledRejection: 'UnhandledRejection',
 };
