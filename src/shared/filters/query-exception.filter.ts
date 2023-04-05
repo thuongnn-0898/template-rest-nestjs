@@ -13,7 +13,7 @@ import { FilterType } from '../types/FilterType';
 import { ErrorConstant } from '../constants/error.constant';
 import { ErrorDto } from '../dtos/error.dto';
 import { LoggerConstant } from '../constants/logger.constant';
-import { internalServerError } from '../ultils/error.util';
+import { ErrorUtil } from '../utils/error.util';
 
 @Catch(QueryFailedError)
 export class QueryFailedErrorFilter implements ExceptionFilter {
@@ -38,7 +38,7 @@ export class QueryFailedErrorFilter implements ExceptionFilter {
         asyncRequestContext.getRequestIdStore(),
       );
     } else {
-      errors = internalServerError();
+      errors = ErrorUtil.internalServerError();
       status = HttpStatus.INTERNAL_SERVER_ERROR;
       logger.error(
         LoggerConstant.internalServer,

@@ -33,6 +33,13 @@ export const ErrorConstant = {
     code: 1017,
     message: '重複しています。',
   },
+  somethingError: {
+    code: '1111',
+    message: 'Somethings must be error',
+  },
+  type: {
+    somethingError: 'somethingError',
+  },
 };
 
 export const HTTP_ERR_MSGS = {

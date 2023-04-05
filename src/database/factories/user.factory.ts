@@ -3,7 +3,7 @@ import { Faker } from '@faker-js/faker';
 import { setSeederFactory } from 'typeorm-extension';
 
 import { User } from '../../entities/user.entity';
-import { hash } from '../../shared/ultils/bcypt.util';
+import { hash } from '../../shared/utils/bcypt.util';
 
 define(User, () => {
   const user = new User();

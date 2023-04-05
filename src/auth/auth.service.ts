@@ -5,7 +5,7 @@ import { AuthTokenDto } from './dtos/auth-token.dto';
 import { Payload } from './index.type';
 import { User } from '../entities/user.entity';
 import { AppConStant } from '../shared/constants/app.constant';
-import { compare } from '../shared/ultils/bcypt.util';
+import { compare } from '../shared/utils/bcypt.util';
 import { UserService } from '../user/user.service';
 import { AuthErrorConstant } from '../errors/auth-errors.constant';
 

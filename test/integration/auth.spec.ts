@@ -10,7 +10,7 @@ import {
   mockJwtVerified,
 } from '../helper';
 import { User } from '../../src/entities/user.entity';
-import { hash } from '../../src/shared/ultils/bcypt.util';
+import { hash } from '../../src/shared/utils/bcypt.util';
 
 describe('Auth controller', () => {
   let app: INestApplication;
