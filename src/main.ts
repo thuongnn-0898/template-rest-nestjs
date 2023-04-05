@@ -1,5 +1,9 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationPipe, BadRequestException, RequestMethod } from '@nestjs/common';
+import {
+  ValidationPipe,
+  BadRequestException,
+  RequestMethod,
+} from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER, WinstonModule } from 'nest-winston';
 
 import { AppModule } from './app.module';
@@ -12,6 +16,7 @@ import { QueryFailedErrorFilter } from './shared/filters/query-exception.filter'
 import { UnauthorizedFilter } from './shared/filters/unauthorized.filter';
 import { EntityNotFoundFilter } from './shared/filters/entity-not-found.filter';
 import { InternalServerErrorFilter } from './shared/filters/internal-server-error.filter';
+import { NotFoundFilter } from './shared/filters/not-found.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -34,6 +39,7 @@ async function bootstrap() {
 
   app.useGlobalFilters(
     new InternalServerErrorFilter(filterParam),
+    new NotFoundFilter(filterParam),
     new QueryFailedErrorFilter(filterParam),
     new BadRequestExceptionFilter(filterParam),
     new UnauthorizedFilter(filterParam),

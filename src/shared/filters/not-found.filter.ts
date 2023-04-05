@@ -3,29 +3,29 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { Response } from 'express';
 
-import { HTTP_ERR_MSGS } from '../constants/error.constant';
+import { ErrorConstant, HTTP_ERR_MSGS } from '../constants/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
 import { ErrorResponseDto } from '../dtos/error-response.dto';
 import { ErrorDto } from '../dtos/error.dto';
 import { FilterType } from '../types/FilterType';
-import { ErrorUtil } from '../utils/error.util';
 
-@Catch()
-export class InternalServerErrorFilter implements ExceptionFilter {
+@Catch(NotFoundException)
+export class NotFoundFilter implements ExceptionFilter {
   constructor(private readonly filterParam: FilterType) {}
 
   catch(exception: any, host: ArgumentsHost) {
     const { logger, asyncRequestContext } = this.filterParam;
-    const status = HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = HttpStatus.NOT_FOUND;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const error: ErrorDto = ErrorUtil.internalServerError();
+    const error: ErrorDto = { code: ErrorConstant[exception.name] };
 
     logger.error(
-      LoggerConstant.internalServer,
+      LoggerConstant.notFound,
       undefined,
       asyncRequestContext.getRequestIdStore(),
     );
