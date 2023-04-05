@@ -6,7 +6,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
 import { Post } from '../entities/post.entity';
 import { ErrorUtil } from '../shared/utils/error.util';
-import { ErrorConstant } from '../shared/constants/error.constant';
+import { ErrorConstant } from '../errors/error.constant';
 
 @Injectable()
 export class PostService {

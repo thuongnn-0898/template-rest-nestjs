@@ -12,9 +12,6 @@ export class ErrorDto {
   resource?: string;
 
   @Expose()
-  code: string;
-
-  @Expose()
   message?: string;
 
   @Expose()

@@ -7,10 +7,9 @@ import {
 import { ValidationError } from 'class-validator';
 import { Response } from 'express';
 
-import messages from '../constants/error-message.constant';
-import { ErrorConstant, HTTP_ERR_MSGS } from '../constants/error.constant';
 import { LoggerConstant } from '../constants/logger.constant';
 import { FilterType } from '../types/FilterType';
+import { ErrorConstant, HTTP_ERR_MSGS } from '../../errors/error.constant';
 
 @Catch(BadRequestException)
 export class BadRequestExceptionFilter implements ExceptionFilter {
@@ -89,13 +88,10 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
   }
 
   private resourceError(error, resource) {
-    const code = ErrorConstant[Object.keys(error.constraints).at(-1)]?.code;
-
     return {
       index: error.index,
       property: error.property,
-      message: messages[code],
-      code,
+      message: ErrorConstant[Object.keys(error.constraints).at(-1)],
       resource,
     };
   }
