@@ -24,7 +24,7 @@ import AppDataSource from '../src/datasource/index';
 import { ErrorDto } from '../src/shared/dtos/error.dto';
 import { JwtAuthGuard } from '../src/auth/guards/jwt-auth.guard';
 import { User } from '../src/entities/user.entity';
-import { hash } from '../src/shared/ultils/bcypt.util';
+import { hash } from '../src/shared/utils/bcypt.util';
 
 export const initApp = async (): Promise<INestApplication> => {
   await mockFs();

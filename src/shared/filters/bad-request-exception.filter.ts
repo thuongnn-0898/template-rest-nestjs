@@ -4,6 +4,7 @@ import {
   Catch,
   ExceptionFilter,
 } from '@nestjs/common';
+import { ValidationError } from 'class-validator';
 import { Response } from 'express';
 
 import messages from '../constants/error-message.constant';
@@ -23,9 +24,14 @@ export class BadRequestExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     let errorResponse = [];
 
-    if (Array.isArray(errors.message)) {
+    if (
+      Array.isArray(errors.message) &&
+      errors.message[0] instanceof ValidationError
+    ) {
       errors = errors.message;
       errorResponse = this.formatErrorValidate(errors);
+    } else {
+      errorResponse.push(errors);
     }
 
     logger.error(

@@ -11,7 +11,7 @@ import { LoggerConstant } from '../constants/logger.constant';
 import { ErrorResponseDto } from '../dtos/error-response.dto';
 import { ErrorDto } from '../dtos/error.dto';
 import { FilterType } from '../types/FilterType';
-import { internalServerError } from '../ultils/error.util';
+import { ErrorUtil } from '../utils/error.util';
 
 @Catch()
 export class InternalServerErrorFilter implements ExceptionFilter {
@@ -22,7 +22,7 @@ export class InternalServerErrorFilter implements ExceptionFilter {
     const status = HttpStatus.INTERNAL_SERVER_ERROR;
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const error: ErrorDto = internalServerError();
+    const error: ErrorDto = ErrorUtil.internalServerError();
 
     logger.error(
       LoggerConstant.internalServer,

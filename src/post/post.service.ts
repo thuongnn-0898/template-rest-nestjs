@@ -1,10 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
 import { Post } from '../entities/post.entity';
-import { EntityNotFoundError } from 'typeorm';
+import { ErrorUtil } from '../shared/utils/error.util';
+import { ErrorConstant } from '../shared/constants/error.constant';
 
 @Injectable()
 export class PostService {
@@ -18,7 +20,13 @@ export class PostService {
   }
 
   findAll() {
-    return `This action returns all post`;
+    throw new BadRequestException(
+      ErrorUtil.badRequest(
+        ErrorConstant.type.somethingError,
+        'error property',
+        Post.name,
+      ),
+    );
   }
 
   findOne(id: number) {
