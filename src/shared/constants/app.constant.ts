@@ -29,4 +29,10 @@ export const AppConStant = {
     host: process.env.REDIS_HOST as string,
     port: process.env.REDIS_PORT as unknown as number,
   },
+  fileType: {
+    image: {
+      jpg: 'image/jpeg',
+    },
+  },
+  fileSize: 3000000, // 3 MB
 };

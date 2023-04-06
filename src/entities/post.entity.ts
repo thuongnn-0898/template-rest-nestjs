@@ -1,8 +1,16 @@
-import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { Base } from './base.entity';
-import { EntityConstant } from '../shared/constants/entity.constant';
 import { User } from './user.entity';
+import { Tag } from './tag.entity';
+import { EntityConstant } from '../shared/constants/entity.constant';
 
 @Entity('posts')
 @Index(['title'], { unique: true, where: 'deleted IS NULL' })
@@ -10,6 +18,9 @@ export class Post extends Base {
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: 'user_id' })
   user: User;
+
+  @OneToMany(() => Tag, (tag) => tag.post)
+  tags: Tag[];
 
   @Column({
     type: 'uuid',
@@ -34,4 +45,11 @@ export class Post extends Base {
     nullable: true,
   })
   description: string;
+
+  @Column({
+    type: 'varchar',
+    name: 'file_name',
+    nullable: true,
+  })
+  fileName: string;
 }
