@@ -11,6 +11,7 @@ import { UserModule } from './user/user.module';
 import { PostModule } from './post/post.module';
 import { AppConStant } from './shared/constants/app.constant';
 import { TasksModule } from './tasks/tasks.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { TasksModule } from './tasks/tasks.module';
     }),
     ScheduleModule.forRoot(),
     AsyncRequestContextModule.forRoot({ isGlobal: true }),
+    MailerModule.forRoot({ isGlobal: true }),
     LoggerModule,
     UserModule,
     AuthModule,
