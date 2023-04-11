@@ -1,0 +1,13 @@
+<b>Post title: <%=locals.post.title %> </b>
+<br>
+Post ID: <b><%=locals.post.id %></b>
+<br>
+Post description: <%=locals.post.description %>
+<br>
+Post's tags:
+<% locals.post.tags.forEach(tag => { %>
+
+<i><%= tag.name %></i>
+
+<% }); %>
+

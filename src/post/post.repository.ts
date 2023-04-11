@@ -14,14 +14,17 @@ export class PostRepository extends Repository<Post> {
 
   async savePost(
     userId: string,
-    createPostDto: CreatePostDto | UpdatePostDto,
+    createOrUpdate: CreatePostDto | UpdatePostDto,
   ): Promise<Post> {
     let post: Post;
 
     await this.dataSource.transaction(async (manager: EntityManager) => {
-      post = await manager.save(Post, { userId, ...createPostDto });
+      post = await manager.save(Post, { userId, ...createOrUpdate });
 
-      let tags = createPostDto.tags.map((tag) => ({ postId: post.id, ...tag }));
+      let tags = createOrUpdate.tags.map((tag) => ({
+        postId: post.id,
+        ...tag,
+      }));
       tags = await manager.save(Tag, tags);
 
       Object.assign(post, { tags });

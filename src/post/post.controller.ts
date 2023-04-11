@@ -41,7 +41,7 @@ export class PostController {
   ): Promise<PostDto> {
     return this.postService.create(
       createPostDto,
-      currentUser.id,
+      currentUser,
       file.buffer,
       file.mimetype,
     );
@@ -84,6 +84,6 @@ export class PostController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() currentUser: User,
   ): Promise<boolean> {
-    return await this.postService.remove(currentUser.id, id);
+    return await this.postService.remove(currentUser, id);
   }
 }
