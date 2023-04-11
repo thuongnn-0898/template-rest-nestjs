@@ -7,45 +7,83 @@ import {
   Param,
   Delete,
   UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  ParseUUIDPipe,
+  UsePipes,
 } from '@nestjs/common';
-import { PostService } from './post.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+
+import { PostDto } from './dto/post.dto';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostService } from './post.service';
+import { User } from '../entities/user.entity';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
+import { Serializer } from '../shared/decorators/serializer.decorator';
+import { FileSizeValidationPipe } from '../shared/pipes/file-validation.pipe';
 
 @UseGuards(JwtAuthGuard)
 @Controller('posts')
+@Serializer(PostDto)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
-  create(@CurrentUser() currentUser, @Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto, currentUser.id);
+  @UseInterceptors(FileInterceptor('file'))
+  @UsePipes(new FileSizeValidationPipe())
+  create(
+    @CurrentUser() currentUser: User,
+    @UploadedFile('file')
+    file: Express.Multer.File,
+    @Body() createPostDto: CreatePostDto,
+  ): Promise<PostDto> {
+    return this.postService.create(
+      createPostDto,
+      currentUser.id,
+      file.buffer,
+      file.mimetype,
+    );
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  async findAll(@CurrentUser() { id }): Promise<PostDto[]> {
+    return await this.postService.findAll(id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    const post = this.postService.findOne(+id);
-    post.name.forEach((element) => {
-      console.log(element);
-    });
-
-    return post;
+  findOne(
+    @CurrentUser() currentUser: User,
+    @Param('id', new ParseUUIDPipe()) id: string,
+  ): Promise<PostDto> {
+    const userId = currentUser.id;
+    return this.postService.findOneOrFail(userId, id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  @UseInterceptors(FileInterceptor('file'))
+  @UsePipes(new FileSizeValidationPipe())
+  update(
+    @CurrentUser() currentUser: User,
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @Body() updatePostDto: UpdatePostDto,
+    @UploadedFile('file') file: Express.Multer.File,
+  ): Promise<PostDto> {
+    return this.postService.update(
+      currentUser.id,
+      id,
+      updatePostDto,
+      file.buffer,
+      file.mimetype,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  async remove(
+    @Param('id', new ParseUUIDPipe()) id: string,
+    @CurrentUser() currentUser: User,
+  ): Promise<boolean> {
+    return await this.postService.remove(currentUser.id, id);
   }
 }
