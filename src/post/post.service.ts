@@ -7,14 +7,19 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostRepository } from './post.repository';
 import { Post } from '../entities/post.entity';
 import { generateToken, getFileType } from '../shared/utils/app.util';
+import { MailJobService } from '../jobs/mail-job/mai-job.service';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class PostService {
-  constructor(private readonly postRepository: PostRepository) {}
+  constructor(
+    private readonly postRepository: PostRepository,
+    private readonly mailJobService: MailJobService,
+  ) {}
 
   async create(
     createPostDto: CreatePostDto,
-    userId: string,
+    user: User,
     file: Buffer,
     mimeType: string,
   ): Promise<Post> {
@@ -26,13 +31,15 @@ export class PostService {
       fs.writeFileSync(`uploads/${createPostDto.fileName}`, file, 'binary');
     }
 
-    const post = await this.postRepository.savePost(userId, createPostDto);
+    const post = await this.postRepository.savePost(user.id, createPostDto);
 
     if (!post || !fs.existsSync(`uploads/${createPostDto.fileName}`)) {
       await this.postRepository.delete(post);
 
       fs.unlinkSync(`uploads/${createPostDto.fileName}`);
     }
+
+    this.sendMailNoticeAboutCreatePost(user.email, post);
 
     return post;
   }
@@ -83,15 +90,40 @@ export class PostService {
     });
   }
 
-  async remove(userId: string, id: string): Promise<boolean> {
-    const post = await this.findOneOrFail(userId, id);
+  async remove(user: User, id: string): Promise<boolean> {
+    const post = await this.findOneOrFail(user.id, id);
 
     await this.postRepository.softDelete(id);
 
     if (post.fileName) {
-      fs.unlinkSync(post.fileName);
+      fs.unlinkSync(`uploads/${post.fileName}`);
     }
 
+    this.sendMailNoticeAboutDeletePost(user.email, post.id);
+
     return true;
+  }
+
+  private async sendMailNoticeAboutCreatePost(userMail: string, post: Post) {
+    await this.mailJobService.sendMailJob({
+      to: userMail,
+      subject: 'Create a new post',
+      text: `You have created a new post.`,
+      template: 'create-post',
+      context: { post: post },
+    });
+  }
+
+  private async sendMailNoticeAboutDeletePost(
+    userMail: string,
+    postId: string,
+  ) {
+    await this.mailJobService.sendMailJob({
+      to: userMail,
+      subject: 'Delete a post',
+      text: `You have deleted a post!!!`,
+      template: 'delete-post',
+      context: { postId: postId },
+    });
   }
 }
