@@ -1,5 +1,6 @@
 import { DataSourceOptions } from 'typeorm';
 import { config } from 'dotenv';
+import { SeederOptions } from 'typeorm-extension';
 
 config();
 
@@ -17,4 +18,6 @@ export default {
   ],
   migrations: ['dist/database/migrations/*.js'],
   migrationsTableName: 'migrations',
-} as DataSourceOptions;
+  seeds: ['dist/database/seeds/*.seed.js'],
+  factories: ['dist/database/factories/*.js'],
+} as DataSourceOptions & SeederOptions;

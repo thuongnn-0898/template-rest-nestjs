@@ -1,19 +1,8 @@
-import { define } from 'typeorm-seeding';
 import { Faker } from '@faker-js/faker';
 import { setSeederFactory } from 'typeorm-extension';
 
 import { User } from '../../entities/user.entity';
 import { hash } from '../../shared/utils/bcypt.util';
-
-define(User, () => {
-  const user = new User();
-  user.code = '001';
-  user.username = 'username';
-  user.email = 'email@example.com';
-  user.password = 'password';
-
-  return user;
-});
 
 export default setSeederFactory(User, async (faker: Faker) => {
   const user = new User();

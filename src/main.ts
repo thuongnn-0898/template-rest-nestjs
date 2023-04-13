@@ -22,6 +22,7 @@ import { NotFoundFilter } from './shared/filters/not-found-exception.filter';
 import { AppConStant } from './shared/constants/app.constant';
 import { ProcessLogger } from './logger/process.logger';
 import { ErrorConstant } from './errors/error.constant';
+import { ForbiddenExceptionFilter } from './shared/filters/forbidden-exception.filter';
 
 async function bootstrap() {
   const jsonParseMiddleware = json({ limit: AppConStant.jsonBodySizeLimit });
@@ -51,6 +52,7 @@ async function bootstrap() {
     new BadRequestExceptionFilter(filterParam),
     new UnauthorizedExceptionFilter(filterParam),
     new EntityNotFoundExceptionFilter(filterParam),
+    new ForbiddenExceptionFilter(filterParam),
   );
 
   app.useGlobalPipes(

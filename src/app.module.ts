@@ -13,6 +13,7 @@ import { PostModule } from './post/post.module';
 import { AppConStant } from './shared/constants/app.constant';
 import { TasksModule } from './tasks/tasks.module';
 import { mailerConfig } from './mailer/mailer.config';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { mailerConfig } from './mailer/mailer.config';
     BullModule.forRoot({
       redis: { ...AppConStant.redis },
     }),
+    CaslModule,
     ScheduleModule.forRoot(),
     AsyncRequestContextModule.forRoot({ isGlobal: true }),
     MailerModule.forRootAsync({ useFactory: () => mailerConfig }),

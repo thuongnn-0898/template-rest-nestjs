@@ -34,7 +34,7 @@ export class PostService {
     const post = await this.postRepository.savePost(user.id, createPostDto);
 
     if (!post || !fs.existsSync(`uploads/${createPostDto.fileName}`)) {
-      await this.postRepository.delete(post);
+      await this.postRepository.delete({ id: post.id });
 
       fs.unlinkSync(`uploads/${createPostDto.fileName}`);
     }
