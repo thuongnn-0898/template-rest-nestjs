@@ -21,13 +21,16 @@ export class PostRepository extends Repository<Post> {
     await this.dataSource.transaction(async (manager: EntityManager) => {
       post = await manager.save(Post, { userId, ...createOrUpdate });
 
-      let tags = createOrUpdate.tags.map((tag) => ({
-        postId: post.id,
-        ...tag,
-      }));
-      tags = await manager.save(Tag, tags);
+      if (createOrUpdate.tags) {
+        let tags = createOrUpdate.tags.map((tag) => ({
+          postId: post.id,
+          ...tag,
+        }));
 
-      Object.assign(post, { tags });
+        tags = await manager.save(Tag, tags);
+
+        Object.assign(post, { tags });
+      }
     });
 
     return post;
