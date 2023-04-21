@@ -5,6 +5,7 @@ export const ErrorConstant = {
   getPropertyWhenNotFound: /"((?:""|[^"])*)"/,
   internalServer: 'INTERNAL_SERVER_ERROR',
   entityNotFound: 'Cannot find any data',
+  forbidden: 'You are not allowed to access this API',
   isNotEmpty: 'should not be empty',
   isString: 'must be a string',
   isEmail: 'must be a email',

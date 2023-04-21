@@ -23,14 +23,19 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../shared/decorators/current-user.decorator';
 import { Serializer } from '../shared/decorators/serializer.decorator';
 import { FileSizeValidationPipe } from '../shared/pipes/file-validation.pipe';
+import { PoliciesGuard } from '../shared/guards/policies.guard';
+import { CheckPermissions } from '../shared/decorators/check-permission.decorator';
+import { ActionEnum } from '../casl/casl.enum';
+import { Post as PostEntity } from '../entities/post.entity';
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PoliciesGuard)
 @Controller('posts')
 @Serializer(PostDto)
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
   @Post()
+  @CheckPermissions([ActionEnum.Create, PostEntity.name])
   @UseInterceptors(FileInterceptor('file'))
   @UsePipes(new FileSizeValidationPipe())
   create(
@@ -48,11 +53,13 @@ export class PostController {
   }
 
   @Get()
+  @CheckPermissions([ActionEnum.Read, PostEntity.name])
   async findAll(@CurrentUser() { id }): Promise<PostDto[]> {
     return await this.postService.findAll(id);
   }
 
   @Get(':id')
+  @CheckPermissions([ActionEnum.Read, PostEntity.name])
   findOne(
     @CurrentUser() currentUser: User,
     @Param('id', new ParseUUIDPipe()) id: string,
@@ -62,6 +69,7 @@ export class PostController {
   }
 
   @Patch(':id')
+  @CheckPermissions([ActionEnum.Update, PostEntity.name])
   @UseInterceptors(FileInterceptor('file'))
   @UsePipes(new FileSizeValidationPipe())
   update(
@@ -80,6 +88,7 @@ export class PostController {
   }
 
   @Delete(':id')
+  @CheckPermissions([ActionEnum.Update, PostEntity.name])
   async remove(
     @Param('id', new ParseUUIDPipe()) id: string,
     @CurrentUser() currentUser: User,

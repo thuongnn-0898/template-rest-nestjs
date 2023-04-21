@@ -1,7 +1,15 @@
-import { Column, Entity, Index, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
 
 import { Base } from './base.entity';
 import { Post } from './post.entity';
+import { Role } from './role.entity';
 import { EntityConstant } from '../shared/constants/entity.constant';
 
 @Entity('users')
@@ -11,6 +19,10 @@ import { EntityConstant } from '../shared/constants/entity.constant';
 export class User extends Base {
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
+
+  @ManyToOne(() => Role, (role) => role.users)
+  @JoinColumn({ name: 'role_id' })
+  role: Role;
 
   @Column({
     type: 'varchar',
@@ -46,4 +58,11 @@ export class User extends Base {
     unique: true,
   })
   code: string;
+
+  @Column({
+    type: 'uuid',
+    name: 'role_id',
+    nullable: false,
+  })
+  roleId: string;
 }
