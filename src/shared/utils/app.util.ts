@@ -43,3 +43,7 @@ export const generateToken = (byteSize = 24) => {
 export const getFileType = (fileType: string): string => {
   return getObjectByValue(AppConStant.fileType, fileType, false);
 };
+
+export const convertFileName = (name: string): string => {
+  return name.toLowerCase().replace(' ', '-');
+};

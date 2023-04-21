@@ -1,6 +1,10 @@
 import * as fs from 'fs';
-import { Injectable } from '@nestjs/common';
+import * as tmp from 'tmp';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
+import { Response } from 'express';
+import PDFDocument from 'pdfkit';
+import { Workbook } from 'exceljs';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -42,6 +46,66 @@ export class PostService {
     this.sendMailNoticeAboutCreatePost(user.email, post);
 
     return post;
+  }
+
+  downloadPostPdf(stream: Response, post: Post): void {
+    const doc = new PDFDocument({ bufferPages: true });
+
+    doc.on('data', (chunk) => stream.write(chunk));
+    doc.on('end', () => stream.end());
+
+    doc.fontSize(25).text(post.title, 100, 100);
+    doc.fontSize(15).text(post.description);
+
+    doc.end();
+
+    return;
+  }
+
+  async exportExcel(userId: string) {
+    const rows = [];
+    const posts = await this.postRepository.findManyByUserId(userId);
+
+    if (!posts) {
+      throw new BadRequestException('there is no post to export excel');
+    }
+
+    posts.forEach((post) => {
+      rows.push(Object.values(post));
+    });
+
+    const book = new Workbook();
+    const sheet = book.addWorksheet('sheet1');
+
+    sheet.addRow(Object.keys(posts[0]));
+    sheet.addRow(rows[0]);
+
+    const file = await new Promise((resolve) => {
+      tmp.file(
+        {
+          discardDescriptor: true,
+          prefix: 'Abc',
+          postfix: '.xlsx',
+          mode: parseInt('0600', 8),
+        },
+        async (err, file) => {
+          if (err) {
+            throw new BadRequestException(err);
+          }
+
+          book.xlsx
+            .writeFile(file)
+            .then(() => {
+              resolve(file);
+            })
+            .catch((err) => {
+              throw new BadRequestException(err);
+            });
+        },
+      );
+    });
+
+    return file;
   }
 
   async findAll(userId: string): Promise<Post[]> {
