@@ -18,6 +18,6 @@ export default {
   ],
   migrations: ['dist/database/migrations/*.js'],
   migrationsTableName: 'migrations',
-  seeds: ['dist/database/seeds/*.seed.js'],
-  factories: ['dist/database/factories/*.js'],
+  seeds: ['src/database/seeds/*.seed.ts'],
+  factories: ['src/database/factories/*.factory.ts'],
 } as DataSourceOptions & SeederOptions;
