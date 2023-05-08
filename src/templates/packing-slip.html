@@ -1,0 +1,182 @@
+<style>
+  ul {
+    list-style-type: none;
+    padding-inline-start: 0;
+    margin-block-start: 0;
+    margin-block-end: 0;
+  }
+
+  li {
+    padding-top: 1%;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td, th {
+    border: 1px solid ;
+    text-align: left;
+    padding: 1%;
+    width: 33.34%;
+  }
+
+  th {
+    background-color: aquamarine;
+  }
+
+  .title {
+    padding-top: 5%; margin: auto; width: 50%; text-align: center;
+  }
+
+  .date {
+    display: grid;grid-template-columns: auto auto;width: 20%;margin-left: auto;margin-top: 5%;
+  }
+
+  .address-info {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3%;
+    width: 80%;
+    display: grid;
+    grid-template-areas: 'ship-info bill-info';
+  }
+
+  .ship-info {
+    grid-area: ship-info;
+    display: grid;
+    grid-template-areas: 'info-title info';
+  }
+
+  .info-title {
+    text-align: center;
+    grid-area: info-title;
+  }
+
+  .info {
+  grid-area: info;
+  }
+
+  .bill-info {
+    grid-area: bill-info;
+    display: grid;
+    grid-template-areas: 'info-title info';
+  }
+
+  .orders-table {
+    margin-top: 3%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
+
+  .items-table {
+    margin-top: 3%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
+</style>
+
+<h1 class="title">Packing Slip</h1>
+<div class="date">
+  <div>Date:</div>
+  <div>June 13, 20xx</div>
+  <div></div>
+  <div>INVOICE # 100</div>
+</div>
+
+<div class="address-info">
+  <div class="ship-info">
+    <div class="info-title">Ship To:</div>
+    <div class="info">
+      <ul>
+        <li>[Name]</li>
+        <li>[Company Name]</li>
+        <li>[Street Address]</li>
+        <li>[City, ST, ZIP Code]</li>
+        <li>[Phone]</li>
+        <li>Customer ID: [ABC12345]</li>
+      </ul>
+    </div>
+  </div>
+  <div class="bill-info">
+    <div class="info-title">Bill To:</div>
+    <div class="info">
+      <ul>
+        <li>[Name]</li>
+        <li>[Company Name]</li>
+        <li>[Street Address]</li>
+        <li>[City, ST, ZIP Code]</li>
+        <li>[Phone]</li>
+        <li>Customer ID: [ABC12345]</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="orders-table">
+  <table>
+    <tr>
+      <th>Order Date</th>
+      <th>Order Number</th>
+      <th>Job</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+</div>
+
+<div class="items-table">
+  <table>
+    <tr>
+      <th>Item #</th>
+      <th style="width: 55%;">Description</th>
+      <th>Quantity</th>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </table>
+</div>

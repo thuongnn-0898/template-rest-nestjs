@@ -5,6 +5,8 @@ import { EntityNotFoundError } from 'typeorm';
 import { Response } from 'express';
 import PDFDocument from 'pdfkit';
 import { Workbook } from 'exceljs';
+import puppeteer from 'puppeteer';
+import { join } from 'path';
 
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -60,6 +62,41 @@ export class PostService {
     doc.end();
 
     return;
+  }
+
+  async downloadPdf() {
+    const content = fs.readFileSync(
+      join(__dirname + '/../../src/templates/packing-slip.html'),
+      { encoding: 'utf8' },
+    );
+
+    const browser = await puppeteer.launch({
+      args: ['--no-sandbox'],
+      headless: true,
+    });
+    const tab = await browser.newPage();
+
+    await tab.setContent(content, { waitUntil: 'networkidle0' });
+    const tmpPath = await new Promise<string>((resolve, reject) => {
+      tmp.file(
+        {
+          discardDescriptor: true,
+          postfix: '.pdf',
+          mode: parseInt('0600', 8),
+        },
+        async function _tempFileCreated(err, path) {
+          if (err) reject(err);
+
+          await tab.pdf({ path: tmpPath });
+
+          resolve(path);
+        },
+      );
+    });
+
+    await browser.close();
+
+    return tmpPath;
   }
 
   async exportExcel(userId: string) {
